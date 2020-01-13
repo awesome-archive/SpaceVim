@@ -1,6 +1,6 @@
 "=============================================================================
 " transient_state.vim --- SpaceVim transient_state API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
+" Copyright (c) 2016-2019 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -14,7 +14,8 @@ let s:self._title = 'Transient State'
 let s:self._handle_inputs = {}
 let s:self._is_quit = []
 let s:self._handle_quit = {}
-let s:self.noredraw = 0
+let s:self._clear_cmdline = 1
+let s:self._cmp = SpaceVim#api#import('vim#compatible')
 
 function! s:self.open() abort
   noautocmd botright split __transient_state__
@@ -53,17 +54,15 @@ function! s:self.open() abort
   while 1
     if has_key(self._keys, 'logo')
       noautocmd wincmd p
-      if self.noredraw
-        redraw!
-      endif
       call call(self._keys.logo, [])
       noautocmd wincmd p
     endif
-    if !self.noredraw
-      redraw!
+    if self._clear_cmdline
+      normal! :
     else
-      let self.noredraw = 0
+      let self._clear_cmdline = 1
     endif
+    redraw
     let char = self._getchar()
     if char ==# "\<FocusLost>" || char ==# "\<FocusGained>" || char2nr(char) == 128
       continue
@@ -90,7 +89,12 @@ function! s:self.open() abort
       exe self._handle_quit[char]
     endif
   endif
-  redraw!
+  if self._clear_cmdline
+    normal! :
+  else
+    let self._clear_cmdline = 1
+  endif
+  redraw
 endfunction
 
 
@@ -123,9 +127,9 @@ if has('nvim')
 else
   function! s:self.highlight_keys(exit, line, begin, end) abort
     if a:exit
-      call matchaddpos('SpaceVim_Transient_State_Exit', [[a:line + 1, a:begin + 1, a:end - a:begin]])
+      call self._cmp.matchaddpos('SpaceVim_Transient_State_Exit', [[a:line + 1, a:begin + 1, a:end - a:begin]])
     else
-      call matchaddpos('SpaceVim_Transient_State_Notexit', [[a:line + 1, a:begin + 1, a:end - a:begin]])
+      call self._cmp.matchaddpos('SpaceVim_Transient_State_Notexit', [[a:line + 1, a:begin + 1, a:end - a:begin]])
     endif
   endfunction
 endif
@@ -136,7 +140,7 @@ if has('nvim')
   endfunction
 else
   function! s:self.highlight_title() abort
-    call matchaddpos('SpaceVim_Transient_State_Title', [1])
+    call self._cmp.matchaddpos('SpaceVim_Transient_State_Title', [1])
   endfunction
 endif
 

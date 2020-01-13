@@ -84,7 +84,7 @@ On_IWhite='\033[0;107m'   # White
 # }}}
 
 # version
-Version='0.6.0'
+Version='1.3.0'
 #System name
 System="$(uname -s)"
 
@@ -118,13 +118,13 @@ error() {
 }
 
 warn () {
-  msg "${Red}[✘]${Color_off} ${1}${2}"
+  msg "${Yellow}[⚠]${Color_off} ${1}${2}"
 }
 # }}}
 
 # echo_with_color {{{
 echo_with_color () {
-  printf '%b\n' "$1$2" >&2
+  printf '%b\n' "$1$2$Color_off" >&2
 }
 # }}}
 
@@ -242,7 +242,7 @@ check_requirements () {
     warn "缺少依赖：git"
   fi
   if hash "vim" &>/dev/null; then
-    is_vim8=$(vim --version | grep "Vi IMproved 8.0")
+    is_vim8=$(vim --version | grep "Vi IMproved 8")
     is_vim74=$(vim --version | grep "Vi IMproved 7.4")
     if [ -n "$is_vim8" ]; then
       success "检测到 Vim 版本: vim 8.0"
@@ -335,7 +335,7 @@ welcome () {
     echo_with_color ${Yellow} "               | ##                                                           "
     echo_with_color ${Yellow} "               | ##                                                           "
     echo_with_color ${Yellow} "               |__/                                                           "
-    echo_with_color ${Yellow} "                    版本 : 0.7.0-dev  中文官网 : https://spacevim.org/cn/     "
+    echo_with_color ${Yellow} "                    版本 : ${Version}  中文官网 : https://spacevim.org/cn/    "
 }
 
 # }}}
@@ -453,4 +453,4 @@ main () {
 
 main $@
 
-# vim:set foldenable foldmethod=marker:
+# vim:set nofoldenable foldmethod=marker:

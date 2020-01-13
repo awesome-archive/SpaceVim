@@ -1,7 +1,20 @@
 ---
 title: "SpaceVim cscope layer"
-description: "This layer provide cscope manager for project"
+description: "cscope layer provides a smart cscope and pycscope helper for SpaceVim, help users win at cscope"
 ---
+
+# [Available Layers](../) >> cscope
+
+<!-- vim-markdown-toc GFM -->
+
+- [Description](#description)
+- [Features](#features)
+- [Install](#install)
+  - [cscope](#cscope)
+  - [layer](#layer)
+- [Key bindings](#key-bindings)
+
+<!-- vim-markdown-toc -->
 
 ## Description
 
@@ -14,7 +27,7 @@ For more info about the differences between Cscope and other similar tools, plea
 - Tag indexing and searching for C-C++ via Cscope
 - Tag indexing and searching for python via PyCscope
 
-## Installation
+## Install
 
 ### cscope
 
@@ -22,12 +35,19 @@ For more info about the differences between Cscope and other similar tools, plea
 sudo pacman -S cscope
 ```
 
+In windows, you can use scoop to install cscope:
+
+```
+scoop install cscope
+```
+
 ### layer
 
-To use this configuration layer, add it to your `~/.SpaceVim.d/init.vim`.
+To use this configuration layer, add it to your configuration file.
 
-```vim
-call SpaceVim#layers#load('cscope')
+```toml
+[[layers]]
+    name = "cscope"
 ```
 
 ## Key bindings
@@ -35,7 +55,8 @@ call SpaceVim#layers#load('cscope')
 | Key Binding | Description                            |
 | ----------- | -------------------------------------- |
 | `SPC m c =` | Find assignments to this symbol        |
-| `SPC m c i` | Create cscope index                    |
+| `SPC m c i` | Create cscope DB                       |
+| `SPC m c u` | Update cscope DBs                      |
 | `SPC m c c` | Find functions called by this function |
 | `SPC m c C` | Find functions calling this function   |
 | `SPC m c d` | find global definition of a symbol     |

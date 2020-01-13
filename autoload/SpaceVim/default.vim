@@ -1,6 +1,6 @@
 "=============================================================================
 " default.vim --- default options in SpaceVim
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
+" Copyright (c) 2016-2019 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -12,7 +12,7 @@ let s:SYSTEM = SpaceVim#api#import('system')
 
 " Default options {{{
 function! SpaceVim#default#options() abort
-  " basic vim settiing
+  " basic vim settings
   if has('gui_running')
     set guioptions-=m " Hide menu bar.
     set guioptions-=T " Hide toolbar
@@ -35,7 +35,6 @@ function! SpaceVim#default#options() abort
   " begining start delete the char you just typed in if you do not use set
   " nocompatible ,you need this
   set backspace=indent,eol,start
-  set smarttab
   set nrformats-=octal
   set listchars=tab:→\ ,eol:↵,trail:·,extends:↷,precedes:↶
   set fillchars=vert:│,fold:·
@@ -56,12 +55,6 @@ function! SpaceVim#default#options() abort
   " do not break words.
   set linebreak
 
-  " tab options:
-  set tabstop=4
-  set expandtab
-  set softtabstop=4
-  set shiftwidth=4
-
   " Enable line number
   set number
 
@@ -78,22 +71,27 @@ function! SpaceVim#default#options() abort
   let g:backup_dir = g:data_dir . 'backup'
   let g:swap_dir = g:data_dir . 'swap'
   let g:undo_dir = g:data_dir . 'undofile'
+  let g:conf_dir = g:data_dir . 'conf'
   if finddir(g:data_dir) ==# ''
-    silent call mkdir(g:data_dir)
+    silent call mkdir(g:data_dir, 'p', 0700)
   endif
   if finddir(g:backup_dir) ==# ''
-    silent call mkdir(g:backup_dir)
+    silent call mkdir(g:backup_dir, 'p', 0700)
   endif
   if finddir(g:swap_dir) ==# ''
-    silent call mkdir(g:swap_dir)
+    silent call mkdir(g:swap_dir, 'p', 0700)
   endif
   if finddir(g:undo_dir) ==# ''
-    silent call mkdir(g:undo_dir)
+    silent call mkdir(g:undo_dir, 'p', 0700)
+  endif
+  if finddir(g:conf_dir) ==# ''
+    silent call mkdir(g:conf_dir, 'p', 0700)
   endif
   unlet g:data_dir
   unlet g:backup_dir
   unlet g:swap_dir
   unlet g:undo_dir
+  unlet g:conf_dir
   set undodir=$HOME/.cache/SpaceVim/undofile
   set backupdir=$HOME/.cache/SpaceVim/backup
   set directory=$HOME/.cache/SpaceVim/swap
@@ -125,6 +123,7 @@ function! SpaceVim#default#options() abort
     " don't give ins-completion-menu messages.
     set shortmess+=c
   endif
+  set shortmess+=s
   " Do not wrap lone lines
   set nowrap
 
@@ -138,42 +137,68 @@ function! SpaceVim#default#layers() abort
   call SpaceVim#layers#load('checkers')
   call SpaceVim#layers#load('format')
   call SpaceVim#layers#load('edit')
-  call SpaceVim#layers#load('tools')
   call SpaceVim#layers#load('ui')
   call SpaceVim#layers#load('core')
   call SpaceVim#layers#load('core#banner')
   call SpaceVim#layers#load('core#statusline')
   call SpaceVim#layers#load('core#tabline')
-  if has('python3')
-    call SpaceVim#layers#load('denite')
-  else
-    call SpaceVim#layers#load('unite')
-  endif
 endfunction
 
 function! SpaceVim#default#keyBindings() abort
+  if g:spacevim_enable_insert_leader
+    inoremap <silent> <Leader><Tab> <C-r>=MyLeaderTabfunc()<CR>
+  endif
 
-  " Save a file with sudo
-  " http://forrst.com/posts/Use_w_to_sudo_write_a_file_with_Vim-uAN
-  " use w!! in cmdline or use W command to sudo write a file
-  cnoremap w!! %!sudo tee > /dev/null %
-  command! W w !sudo tee % > /dev/null
+  " yank and paste
+  if has('unnamedplus')
+    xnoremap <Leader>y "+y
+    xnoremap <Leader>d "+d
+    nnoremap <Leader>p "+p
+    let g:_spacevim_mappings.p = ['normal! "+p', 'paste after here']
+    nnoremap <Leader>P "+P
+    let g:_spacevim_mappings.P = ['normal! "+P', 'paste before here']
+    xnoremap <Leader>p "+p
+    xnoremap <Leader>P "+P
+  else
+    xnoremap <Leader>y "*y
+    xnoremap <Leader>d "*d
+    nnoremap <Leader>p "*p
+    let g:_spacevim_mappings.p = ['normal! "*p', 'paste after here']
+    nnoremap <Leader>P "*P
+    let g:_spacevim_mappings.P = ['normal! "*P', 'paste before here']
+    xnoremap <Leader>p "*p
+    xnoremap <Leader>P "*P
+  endif
 
+
+  " quickfix list movement
+  let g:_spacevim_mappings.q = {'name' : '+Quickfix movement'}
+  call SpaceVim#mapping#def('nnoremap', '<Leader>qn', ':cnext<CR>',
+        \ 'Jump to next quickfix list position',
+        \ 'cnext',
+        \ 'Next quickfix list')
+  call SpaceVim#mapping#def('nnoremap', '<Leader>qp', ':cprev<CR>',
+        \ 'Jump to previous quickfix list position',
+        \ 'cprev',
+        \ 'Previous quickfix list')
+  call SpaceVim#mapping#def('nnoremap', '<Leader>ql', ':copen<CR>',
+        \ 'Open quickfix list window',
+        \ 'copen',
+        \ 'Open quickfix list window')
+  call SpaceVim#mapping#def('nnoremap <silent>', '<Leader>qr', 'q',
+        \ 'Toggle recording',
+        \ '',
+        \ 'Toggle recording mode')
+  call SpaceVim#mapping#def('nnoremap <silent>', '<Leader>qc', ':call setqflist([])<CR>',
+        \ 'Clear quickfix list',
+        \ '',
+        \ 'Clear quickfix')
 
   " Use Ctrl+* to jump between windows
   nnoremap <silent><C-Right> :<C-u>wincmd l<CR>
   nnoremap <silent><C-Left>  :<C-u>wincmd h<CR>
   nnoremap <silent><C-Up>    :<C-u>wincmd k<CR>
   nnoremap <silent><C-Down>  :<C-u>wincmd j<CR>
-  if has('nvim')
-    exe 'tnoremap <silent><C-Right> <C-\><C-n>:<C-u>wincmd l<CR>'
-    exe 'tnoremap <silent><C-Left>  <C-\><C-n>:<C-u>wincmd h<CR>'
-    exe 'tnoremap <silent><C-Up>    <C-\><C-n>:<C-u>wincmd k<CR>'
-    exe 'tnoremap <silent><C-Down>  <C-\><C-n>:<C-u>wincmd j<CR>'
-    exe 'tnoremap <silent><M-Left>  <C-\><C-n>:<C-u>bprev<CR>'
-    exe 'tnoremap <silent><M-Right>  <C-\><C-n>:<C-u>bnext<CR>'
-    exe 'tnoremap <silent><esc>     <C-\><C-n>'
-  endif
 
 
   "Use jk switch to normal mode
@@ -193,9 +218,6 @@ function! SpaceVim#default#keyBindings() abort
   inoremap <silent><C-S-Up> <Esc>:m .-2<CR>==gi
   vnoremap <silent><C-S-Down> :m '>+1<CR>gv=gv
   vnoremap <silent><C-S-Up> :m '<-2<CR>gv=gv
-  " download gvimfullscreen.dll from github, copy gvimfullscreen.dll to
-  " the directory that has gvim.exe
-  nnoremap <F11> :call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<cr>
 
   " Start new line
   inoremap <S-Return> <C-o>o
@@ -224,18 +246,9 @@ function! SpaceVim#default#keyBindings() abort
   nnoremap <silent><Down> gj
   nnoremap <silent><Up> gk
 
-
-  " Use Q format lines
-  map Q gq
-
   " Navigate window
   nnoremap <silent><C-q> <C-w>
-  nnoremap <silent><C-x> <C-w>x
 
-  " Navigation in command line
-  cnoremap <C-a> <Home>
-  cnoremap <C-b> <Left>
-  cnoremap <C-f> <Right>
 
 
   " Fast saving
@@ -266,30 +279,30 @@ function! SpaceVim#default#keyBindings() abort
   nnoremap <silent><M-3> :<C-u>call <SID>tobur(3)<CR>
   nnoremap <silent><M-4> :<C-u>call <SID>tobur(4)<CR>
   nnoremap <silent><M-5> :<C-u>call <SID>tobur(5)<CR>
-  nnoremap <silent><M-Right> :<C-U>call <SID>tobur("bnext")<CR>
-  nnoremap <silent><M-Left> :<C-U>call <SID>tobur("bprev")<CR>
+  nnoremap <silent><M-Right> :<C-U>call <SID>tobur("next")<CR>
+  nnoremap <silent><M-Left> :<C-U>call <SID>tobur("prev")<CR>
 
-  call SpaceVim#mapping#def('nnoremap <silent>','<M-x>',':call chat#qq#OpenMsgWin()<cr>',
-        \ 'Open qq chatting room','call chat#chatting#OpenMsgWin()')
-  call SpaceVim#mapping#def('nnoremap <silent>','<M-w>',':call chat#weixin#OpenMsgWin()<cr>',
-        \ 'Open weixin chatting room','call chat#chatting#OpenMsgWin()')
-  call SpaceVim#mapping#def('nnoremap <silent>','<M-c>',':call chat#chatting#OpenMsgWin()<cr>',
-        \ 'Open chatting room','call chat#chatting#OpenMsgWin()')
+  call SpaceVim#mapping#def('nnoremap <silent>','g=',':call SpaceVim#mapping#format()<cr>','format current buffer','call SpaceVim#mapping#format()')
 
-  call SpaceVim#mapping#def('nnoremap <silent>','g=',':call zvim#format()<cr>','format current buffer','call zvim#format')
-
-  call SpaceVim#mapping#def('nnoremap <silent>', '<C-c>', ':<c-u>call zvim#util#CopyToClipboard()<cr>',
-        \ 'Copy buffer absolute path to X11 clipboard','call zvim#util#CopyToClipboard()')
-  call SpaceVim#mapping#def('nnoremap <silent>', '<Tab>', ':wincmd w<CR>', 'Switch to next window or tab','wincmd w')
-  call SpaceVim#mapping#def('nnoremap <silent>', '<S-Tab>', ':wincmd p<CR>', 'Switch to previous window or tab','wincmd p')
+  call SpaceVim#mapping#def('nnoremap <silent>', '<C-c>', ':<c-u>call SpaceVim#util#CopyToClipboard()<cr>',
+        \ 'Copy buffer absolute path to X11 clipboard','call SpaceVim#util#CopyToClipboard()')
 endfunction
 
 fu! s:tobur(num) abort
-  if index(get(g:,'spacevim_altmoveignoreft',[]), &filetype) == -1
-    if a:num ==# 'bnext'
-      bnext
-    elseif a:num ==# 'bprev'
-      bprev
+  if index(get(g:,'_spacevim_altmoveignoreft',[]), &filetype) == -1
+    if a:num ==# 'next'
+      if tabpagenr('$') > 1
+        tabnext
+      else
+        bnext
+      endif
+
+    elseif a:num ==# 'prev'
+      if tabpagenr('$') > 1
+        tabprevious
+      else
+        bprev
+      endif
     else
       let ls = split(execute(':ls'), "\n")
       let buffers = []

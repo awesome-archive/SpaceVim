@@ -1,9 +1,9 @@
 ---
 title: "SpaceVim lang#ocaml layer"
-description: "This layer is for Python development, provide autocompletion, syntax checking, code format for ocaml file."
+description: "This layer is for OCaml development, provide autocompletion, syntax checking, code format for OCaml file."
 ---
 
-# [SpaceVim Layers:](https://spacevim.org/layers) lang#ocaml
+# [Available Layers](../../) >> lang#ocaml
 
 <!-- vim-markdown-toc GFM -->
 
@@ -22,16 +22,25 @@ When using in a multi-file project, be sure to include a [.merlin](https://githu
 
 ## Install
 
-To use this configuration layer, add `call SpaceVim#layers#load('lang#ocaml')` to your custom configuration file.
+To use this configuration layer, update custom configuration file with:
+
+```toml
+[[layers]]
+  name = "lang#ocaml"
+```
 
 ## Features
 
 - auto-completion
 - syntax checking
 - goto definition
+- type hint
+- check `Merlin` version
 
 ## Key bindings
 
-| Key Binding | Description                                               |
-| ----------- | --------------------------------------------------------- |
-| `gd`        | jump at the definition of the identifier under the cursor |
+| Key Binding | Description                                                         |
+| ----------- | ------------------------------------------------------------------- |
+| `gd`        | jump at the definition of the identifier under the cursor           |
+| `SPC l m v` | display `Merlin` version which currently labored                    |
+| `SPC l m t` | display type informations under the cursor or selected code snippet |

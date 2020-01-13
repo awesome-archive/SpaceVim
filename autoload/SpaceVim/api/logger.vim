@@ -1,10 +1,22 @@
 "=============================================================================
 " logger.vim --- SpaceVim logger API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
+" Copyright (c) 2016-2019 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
+
+
+""
+" @section logger, api-logger
+" @parentsection api
+" provides some functions to manager logger
+"
+" set_silent({silent})
+"
+"   {silent} is a Boolean. by default it is false, and log will be print to
+"   screen.
+
 let s:self = {
       \ 'name' : '',
       \ 'silent' : 1,
@@ -128,4 +140,8 @@ function! s:self._comp(msg, l) abort
       return 1
     endif
   endif
+endfunction
+
+function! s:self.clear(level) abort
+  let self.temp = filter(deepcopy(self.temp), '!self._comp(v:val, a:level)')
 endfunction

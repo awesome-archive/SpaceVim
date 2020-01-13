@@ -259,7 +259,9 @@ function! s:view_github_starred_repos() abort
     Unite -silent -ignorecase -winheight=17 -start-insert menu:MyStarredrepos
   endif
 endfunction
-call zvim#util#loadMusics()
+if SpaceVim#layers#isLoaded('tools#mpv')
+  call SpaceVim#layers#tools#mpv#loadMusics()
+endif
 augroup unite_buffer_feature
   autocmd FileType unite call s:unite_my_settings()
 augroup END
@@ -269,27 +271,33 @@ function! s:unite_my_settings()
 
   " Play nice with supertab
   let b:SuperTabDisabled=1
+
   " Enable navigation with control-j and control-k in insert mode
-  imap <buffer> <C-n>     <Plug>(unite_select_next_line)
-  nmap <buffer> <C-n>     <Plug>(unite_select_next_line)
+  imap <buffer> <C-j>     <Plug>(unite_select_next_line)
+  nmap <buffer> <C-j>     <Plug>(unite_select_next_line)
   imap <buffer> <TAB>     <Plug>(unite_select_next_line)
   nmap <buffer> <TAB>     <Plug>(unite_select_next_line)
-  imap <buffer> <C-p>     <Plug>(unite_select_previous_line)
-  nmap <buffer> <C-p>     <Plug>(unite_select_previous_line)
+  imap <buffer> <C-k>     <Plug>(unite_select_previous_line)
+  nmap <buffer> <C-k>     <Plug>(unite_select_previous_line)
   imap <buffer> <S-Tab>   <Plug>(unite_select_previous_line)
   nmap <buffer> <S-Tab>   <Plug>(unite_select_previous_line)
-
-
-  imap <buffer> jj      <Plug>(unite_insert_leave)
-  "imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
-
-  imap <buffer><expr> j unite#smart_map('j', '')
   imap <buffer> <C-w>     <Plug>(unite_delete_backward_path)
+  imap <buffer><expr> j unite#smart_map('j', '')
+
+  " Runs "split" action by <C-s>.
+  imap <silent><buffer><expr> <C-s>     unite#do_action('split')
+  nmap <silent><buffer><expr> <C-s>     unite#do_action('split')
+
+  " Runs "vsplit" action by <C-v>.
+  imap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
+  nmap <silent><buffer><expr> <C-v>     unite#do_action('vsplit')
+
+  " Runs "tabopen" action by <C-t>.
+  imap <silent><buffer><expr> <C-t>     unite#do_action('tabopen')
+  nmap <silent><buffer><expr> <C-t>     unite#do_action('tabopen')
+
   imap <buffer> '     <Plug>(unite_quick_match_default_action)
   nmap <buffer> '     <Plug>(unite_quick_match_default_action)
-  imap <buffer><expr> x
-        \ unite#smart_map('x', "\<Plug>(unite_quick_match_choose_action)")
-  nmap <buffer> x     <Plug>(unite_quick_match_choose_action)
   nmap <buffer> <C-z>     <Plug>(unite_toggle_transpose_window)
   imap <buffer> <C-z>     <Plug>(unite_toggle_transpose_window)
   imap <buffer> <C-y>     <Plug>(unite_narrowing_path)
@@ -298,23 +306,13 @@ function! s:unite_my_settings()
   imap <buffer> <C-e>     <Plug>(unite_toggle_auto_preview)
   nmap <buffer> <C-r>     <Plug>(unite_narrowing_input_history)
   imap <buffer> <C-r>     <Plug>(unite_narrowing_input_history)
-  nnoremap <silent><buffer><expr> l
-        \ unite#smart_map('l', unite#do_action('default'))
-
   let unite = unite#get_current_unite()
   if unite.profile_name ==# 'search'
     nnoremap <silent><buffer><expr> r     unite#do_action('replace')
   else
     nnoremap <silent><buffer><expr> r     unite#do_action('rename')
   endif
-
   nnoremap <silent><buffer><expr> cd     unite#do_action('lcd')
-  nnoremap <buffer><expr> S      unite#mappings#set_current_filters(
-        \ empty(unite#mappings#get_current_filters()) ?
-        \ ['sorter_reverse'] : [])
-
-  " Runs "split" action by <C-s>.
-  imap <silent><buffer><expr> <C-s>     unite#do_action('split')
 endfunction
 
 " vim:set et sw=2 cc=80:

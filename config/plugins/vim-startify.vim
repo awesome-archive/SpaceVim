@@ -24,7 +24,7 @@ fu! s:update_logo()
   endif
 endf
 let g:startify_session_dir = $HOME .  '/.data/' . ( has('nvim') ? 'nvim' : 'vim' ) . '/session'
-let g:startify_files_number = 6
+let g:startify_files_number = g:spacevim_home_files_number
 let g:startify_list_order = [
       \ ['   My most recently used files in the current directory:'],
       \ 'dir',
@@ -62,12 +62,19 @@ if !exists('g:startify_custom_header')
 endif
 call SpaceVim#mapping#space#def('nnoremap', ['a','s'], 'Startify | doautocmd WinEnter', 'fancy start screen',1)
 
-function! FileIcon(path)
-  let icon = s:FILE.fticon(a:path)
-  return empty(icon) ? ' ' : icon
-endfunction
+if g:spacevim_enable_tabline_ft_icon || get(g:, 'spacevim_enable_tabline_filetype_icon', 0)
+  " the old option g:spacevim_enable_tabline_filetype_icon should also works
+  " well
 
-function! StartifyEntryFormat()
-  return 'FileIcon(entry_path) ."  ". entry_path'
-endfunction
+  function! FileIcon(path)
+    let icon = s:FILE.fticon(a:path)
+    return empty(icon) ? ' ' : icon
+  endfunction
+
+  function! StartifyEntryFormat()
+    return 'FileIcon(entry_path) ."  ". entry_path'
+  endfunction
+
+endif
+
 " vim:set et sw=2:
