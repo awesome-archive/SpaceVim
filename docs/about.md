@@ -1,30 +1,44 @@
 ---
-title:  "About"
-description: "SpaceVim is a communicate driven vim distribution that supports vim and neovim"
+title: "About"
+description: "The goals, credits and contact information about SpaceVim."
 ---
 
 # About
 
-## Version
+<!-- vim-markdown-toc GFM -->
 
-[SpaceVim](https://github.com/SpaceVim/SpaceVim) is a community-driven vim distribution that supports vim and Neovim.  SpaceVim manages collections of plugins in layers.  Layers make it easy for you, the user, to enable a new language or feature by grouping all the related plugins together. It got inspired by spacemacs. 
+- [History](#history)
+- [Goals](#goals)
+- [Credits & Thanks](#credits--thanks)
+
+<!-- vim-markdown-toc -->
+
+## History
+
+This project started in December 2016, and currently maintained by [Eric Wong](https://wsdjeg.net).
+
+```diff
+commit 0c95bd8987c124837afef9a271e1b3c4c19a449b
+Author: Wang Shidong <wsdjeg@users.noreply.github.com>
+Date:   Sun Dec 25 22:40:55 2016 -0600
+
+    Initial commit
+```
 
 ## Goals
 
-- Provide a consistent user experience across platforms.
-- Provide better default layer for different languages.
-
-## Principles
-
-- Do not regress from origin
-- Decide outcomes by weighing cost and benefit
-- prefer usability over tradition if the benefits are overwhelming
-- Give usability a chance™
+- Mnemonic key bindings navigation
+- More IDE-like features in both Vim and Neovim
+- Better programming language support
+- Cross-platform consistency
+- Fast start up and efficient operation
 
 ## Credits & Thanks
 
-- Current maintainer: [Wang Shidong](https://github.com/wsdjeg)
-- [![GitHub contributors](https://img.shields.io/github/contributors/SpaceVim/SpaceVim.svg)](https://github.com/SpaceVim/SpaceVim/graphs/contributors)
+- [Hack-SpaceVim](https://github.com/Gabirel/Hack-SpaceVim) by [@Gabirel](https://github.com/Gabirel)
+- [SpaceVimTutorial](https://everettjf.gitbooks.io/spacevimtutorial/content/) by [@everettjf](https://github.com/everettjf)
+- [10-minutes-to-SpaceVim](https://github.com/Jackiexiao/10-minutes-to-SpaceVim) by [@Jackiexiao](https://github.com/Jackiexiao)
+- [A First Look At SpaceVim](https://www.youtube.com/watch?v=iXPS_NHLj9k) by [@DistroTube](https://www.youtube.com/channel/UCVls1GmFKf6WlTraIb_IaJg)
+- [Getting Started With SpaceVim](https://www.youtube.com/watch?v=3xB501CJDB8) by [FOSS King](https://www.youtube.com/channel/UCfU_sitghekwveLh6yM_xuA)
 - [vimdoc](https://github.com/google/vimdoc) generate doc file for SpaceVim
-- [Rafael Bodill](https://github.com/rafi) and his vim-config
-- [Bailey Ling](https://github.com/bling) and his dotvim
+- Authors of all the plugins used in SpaceVim.

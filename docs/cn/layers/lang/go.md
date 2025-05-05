@@ -1,53 +1,110 @@
 ---
-title: "SpaceVim golang layer"
-description: "This layer is for golang development. It also provides additional language-specific key mappings."
+title: "SpaceVim lang#go 模块"
+description: "这一模块为 SpaceVim 提供了 Go 的开发支持，包括代码补全、语法检查、代码格式化等特性。"
+lang: zh
 ---
 
-# [SpaceVim Layers:](https://spacevim.org/layers) go
+# [可用模块](../../) >> lang#go
 
 <!-- vim-markdown-toc GFM -->
 
-- [Description](#description)
-- [Install](#install)
-- [Features](#features)
-- [Key bindings](#key-bindings)
+- [模块简介](#模块简介)
+- [功能特性](#功能特性)
+- [启用模块](#启用模块)
+- [模块选项](#模块选项)
+- [快捷键](#快捷键)
 
 <!-- vim-markdown-toc -->
 
-## Description
+## 模块简介
 
-This layer is for golang development. It also provides additional language-specific key mappings.
+该模块为 SpaceVim 提供了 [Golang](https://go.dev/) 开发支持，包括代码补全，格式化，语法检查等特性。同时提供诸多语言专属快捷键。
 
-## Install
+## 功能特性
 
-To use this configuration layer, add `call SpaceVim#layers#load('lang#go')` to your custom configuration file.
+- 代码补全
+- 语法检查
+- 跳转定义处
+- 查询函数引用
 
-## Features
+## 启用模块
 
-- auto-completion
-- syntax checking
-- goto definition
-- refernce finder
+可通过在配置文件内加入如下配置来启用该模块：
 
-## Key bindings
+```toml
+[[layers]]
+  name = "lang#go"
+```
 
-**Import key bindings:**
+默认情况下，tagbar 这一插件无法显示 go 语法树，需要安装一个依赖 [gotags](https://github.com/jstemmer/gotags)：
 
-| Key Binding | Description     |
-| ----------- | --------------- |
-| SPC l i     | go implements   |
-| SPC l f     | go info         |
-| SPC l e     | go rename       |
-| SPC l r     | go run          |
-| SPC l b     | go build        |
-| SPC l t     | go test         |
-| SPC l d     | go doc          |
-| SPC l v     | go doc vertical |
-| SPC l c     | go coverage     |
+```sh
+go get -u github.com/jstemmer/gotags
+```
 
-**Code formatting:**
+## 模块选项
 
-the default key bindings for format current buffer is `SPC b f`, and this key bindings is defined in [format layer](<>). you can also use `g=` to indent current buffer.
+- `enabled_linters`: 设置 Golang 语言的语法检查的工具列表，默认模式值是`['golint']`。
+  可用的值包括：`go`, `gometalinter`
+- `go_file_head`: 设置默认的 Golang 源文件头模板。
 
-To make neoformat support go files, you should have [go-fmt](http://golang.org/cmd/gofmt/) command available, or
-install [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports). `go-fmt` is delivered by golang's default installation, so make sure you have correctly setup your go environment.
+  ```
+  [[layers]]
+      name = "lang#go"
+      go_file_head = [
+          '#!/usr/bin/python3',
+          '# -*- coding : utf-8 -*-'
+          ''
+  ]
+  ```
+
+- `go_interpreter`: 设置 Golang 的可执行文件路径。
+
+  ```
+  [[layers]]
+      name = 'lang#go'
+      go_interpreter = '~/download/bin/go'
+  ```
+
+- `format_on_save`: 设置是否启用 Golang 源文件保存时的语法检查，默认该选项已禁用。
+
+  ```
+  [[layers]]
+      name = 'lang#go'
+      format_on_save = true
+  ```
+
+## 快捷键
+
+**语言专属快捷键：**
+
+| 快捷键    | 功能描述                  |
+| --------- | ------------------------- |
+| `SPC l a` | go alternate              |
+| `SPC l b` | go build                  |
+| `SPC l c` | go coverage               |
+| `SPC l d` | go doc                    |
+| `SPC l D` | go doc vertical           |
+| `SPC l e` | go rename                 |
+| `SPC l g` | go definition             |
+| `SPC l G` | go generate               |
+| `SPC l h` | go info                   |
+| `SPC l i` | go implements             |
+| `SPC l I` | implement stubs           |
+| `SPC l k` | add tags                  |
+| `SPC l K` | remove tags               |
+| `SPC l l` | list declarations in file |
+| `SPC l m` | format improts            |
+| `SPC l M` | add import                |
+| `SPC l r` | go run                    |
+| `SPC l s` | fill struct               |
+| `SPC l t` | go test                   |
+| `SPC l v` | freevars                  |
+| `SPC l x` | go referrers              |
+
+**代码格式化：**
+
+默认的代码格式化快捷键是 `SPC b f`，该快捷键由 `format` 模块定义，同时也可以通过 `g =` 来对齐整个文档。
+
+为了使得 `format` 模块支持 Go 文件，需要确认有可执行命令 [go-fmt](http://golang.org/cmd/gofmt/) 或者 [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)，
+通常 `go-fmt` 命令为 Go 自带的程序，请确认 Go 开发环境是否配置正确。

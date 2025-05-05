@@ -1,12 +1,13 @@
 ---
 title: SpaceVim release v0.5.0
-categories: changelog
-excerpt: "Many new features come out with v0.5.0"
-type: NewsArticle
+categories: [changelog, blog]
+description: "SpaceVim v0.5.0 comes out with five new language layer and many new features"
+type: article
+commentsID: "SpaceVim release v0.5.0"
 comments: true
 ---
 
-# [Changelogs](https://spacevim.org/development#changelog) > SpaceVim release v0.5.0
+# [Changelogs](../development#changelog) > SpaceVim release v0.5.0
 
 ## New Features
 

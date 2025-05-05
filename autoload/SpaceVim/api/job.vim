@@ -1,10 +1,70 @@
 "=============================================================================
-" job.vim --- SpaceVim job API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" job.vim --- job api
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
+
+
+
+""
+" @section job, api-job
+" @parentsection api
+" provides some functions to manager job
+"
+" start({cmd}[, {opt}])
+" 
+"   spawns {cmd} as a job. {opts} is a dictionary with these keys:
+"
+"   on_stdout: stdout event handler (function name or Funcref)
+"
+"   on_stderr: stderr event handler (function name or Funcref)
+"   
+"   on_exit: exit event handler (function name or Funcref)
+"
+"   cwd: working directory of the job; defaults to current directory
+"
+" stop(id)
+"
+"   stop job via job id.
+"
+" send(id, data)
+"
+"   send {data} to specific job.
+"
+" status(id)
+"
+"   return the job status of a specific job.
+"
+"
+" This api also can be use in lua:
+"
+" Example: >
+"   local job = require('spacevim.api.job')
+"
+"   local function on_stdout(id, data)
+"
+"   end
+"
+"   local function on_stderr(id, data)
+"   
+"   end
+"
+"   local function on_exit(id, code, single)
+"
+"   end
+"
+"   job.start({'vim', '--version'},
+"     on_stdout = on_stdout,
+"     on_stderr = on_stderr,
+"     on_exit = on_exit
+"   )
+" <
+
+
+
+
 function! SpaceVim#api#job#get() abort
   return deepcopy(s:self)
 endfunction
@@ -13,7 +73,7 @@ endfunction
 let s:self = {}
 let s:self.jobs = {}
 let s:self.nvim_job = has('nvim')
-let s:self.vim_job = !has('nvim') && has('job') && has('patch-8.0.0027')
+let s:self.vim_job = !has('nvim') && has('job') && has('patch-7.4.1689')
 let s:self.vim_co = SpaceVim#api#import('vim#compatible')
 let s:self._message = []
 
@@ -23,10 +83,10 @@ if !s:self.nvim_job && !s:self.vim_job
     au! User SpaceVim_job_stdout nested call call(s:self.opts.on_stdout, s:self.job_argv)
     au! User SpaceVim_job_stderr nested call call(s:self.opts.on_stderr, s:self.job_argv)
     au! User SpaceVim_job_exit nested call call(s:self.opts.on_exit, s:self.job_argv)
-  augroup ENd
+  augroup END
 endif
 
-function! s:self.warn(...) abort
+function! s:self.warn(...) abort dict
   if len(a:000) == 0
     echohl WarningMsg | echom 'Current version do not support job feature, fallback to sync system()' | echohl None
   elseif len(a:000) == 1 && type(a:1) == type('')
@@ -34,25 +94,25 @@ function! s:self.warn(...) abort
   else
   endif
 endfunction
-function! s:self.warp(argv, opts) abort
+function! s:self.warp(argv, opts) abort dict
   let obj = {}
   let obj._argv = a:argv
   let obj._opts = a:opts
   let obj.in_io = get(a:opts, 'in_io', 'pipe')
   " @vimlint(EVL103, 1, a:job_id)
-  function! obj._out_cb(job_id, data) abort
+  function! obj._out_cb(job_id, data) abort dict
     if has_key(self._opts, 'on_stdout')
       call self._opts.on_stdout(self._opts.jobpid, [a:data], 'stdout')
     endif
   endfunction
 
-  function! obj._err_cb(job_id, data) abort
+  function! obj._err_cb(job_id, data) abort dict
     if has_key(self._opts, 'on_stderr')
       call self._opts.on_stderr(self._opts.jobpid, [a:data], 'stderr')
     endif
   endfunction
 
-  function! obj._exit_cb(job_id, data) abort
+  function! obj._exit_cb(job_id, data) abort dict
     if has_key(self._opts, 'on_exit')
       call self._opts.on_exit(self._opts.jobpid, a:data, 'exit')
     endif
@@ -75,16 +135,95 @@ function! s:self.warp(argv, opts) abort
   return obj
 endfunction
 
+function! s:self.warp_nvim(argv, opts) abort dict
+  let obj = {}
+  let obj._argv = a:argv
+  let obj._opts = a:opts
+  let obj._jobs = self.jobs
+  " @vimlint(EVL103, 1, a:job_id)
+  " @vimlint(EVL103, 1, a:event)
+  function! obj.__on_stdout(id, data, event) abort dict
+    if has_key(self._opts, 'on_stdout')
+      if a:data[-1] ==# '' && len(a:data) > 1
+        call self._opts.on_stdout(a:id, [self._eof . a:data[0]] + a:data[1:-2], 'stdout')
+        let self._eof = ''
+      elseif len(a:data) > 1
+        call self._opts.on_stdout(a:id, [self._eof . a:data[0]] + a:data[1:-2], 'stdout')
+        let self._eof = a:data[-1]
+      elseif len(a:data) ==# 1 && a:data[-1] ==# '' && !empty(self._eof)
+        call self._opts.on_stdout(a:id, [self._eof], 'stdout')
+        let self._eof = ''
+      elseif len(a:data) ==# 1 && a:data[-1] !=# ''
+        let self._eof .= a:data[-1]
+      endif
+    endif
+  endfunction
+
+  function! obj.__on_stderr(id, data, event) abort dict
+    if has_key(self._opts, 'on_stderr')
+      if a:data[-1] ==# '' && len(a:data) > 1
+        call self._opts.on_stderr(a:id, [self._eof . a:data[0]] + a:data[1:-2], 'stderr')
+        let self._eof = ''
+      elseif len(a:data) > 1
+        call self._opts.on_stderr(a:id, [self._eof . a:data[0]] + a:data[1:-2], 'stderr')
+        let self._eof = a:data[-1]
+      elseif len(a:data) ==# 1 && a:data[-1] ==# '' && !empty(self._eof)
+        call self._opts.on_stderr(a:id, [self._eof], 'stderr')
+        let self._eof = ''
+      elseif len(a:data) ==# 1 && a:data[-1] !=# ''
+        let self._eof .= a:data[-1]
+      endif
+    endif
+  endfunction
+  function! obj.__on_exit(id, data, event) abort dict
+    if has_key(self._opts, 'on_exit')
+      if has_key(self._jobs, a:id)
+        " when run JOB.stop(id), it will be removed from _jobs before
+        " __on_exit function called.
+        let self._jobs[a:id][1] = a:data ? 'failed' : 'dead'
+      endif
+      call self._opts.on_exit(a:id, a:data, 'exit')
+    endif
+  endfunction
+  " @vimlint(EVL103, 0, a:job_id)
+  " @vimlint(EVL103, 0, a:event)
+
+  let obj = {
+        \ 'argv': a:argv,
+        \ 'opts': {
+        \ '_opts': obj._opts,
+        \ '_jobs' : obj._jobs,
+        \ '_eof': '',
+        \ 'on_stdout': obj.__on_stdout,
+        \ 'on_stderr': obj.__on_stderr,
+        \ 'on_exit': obj.__on_exit,
+        \ }
+        \ }
+  if has_key(a:opts, 'cwd')
+    call extend(obj.opts, {'cwd' : a:opts.cwd})
+  endif
+  if has_key(a:opts, 'env')
+    call extend(obj.opts, {'env' : a:opts.env})
+  endif
+  return obj
+endfunction
+
 " start a job, and return the job_id.
-function! s:self.start(argv, ...) abort
+function! s:self.start(argv, ...) abort dict
   if self.nvim_job
-    if len(a:000) > 0
-      let job = jobstart(a:argv, a:1)
-    else
-      let job = jobstart(a:argv)
-    endi
+    try
+      if len(a:000) > 0
+        let opts = a:1
+      else
+        let opts = {}
+      endif
+      let wrapped = self.warp_nvim(a:argv, opts)
+      let job = jobstart(wrapped.argv, wrapped.opts)
+    catch /^Vim\%((\a\+)\)\=:E903/
+      return -1
+    endtry
     if job > 0
-      let msg = ['process '. jobpid(job), ' run']
+      let msg = ['process '. jobpid(job), 'run']
       call extend(self.jobs, {job : msg})
     else
       if job == -1
@@ -164,14 +303,17 @@ function! s:self.start(argv, ...) abort
   endif
 endfunction
 
-function! s:self.stop(id) abort
+function! s:self.stop(id) abort dict
   if self.nvim_job
+    let done = 0
     if has_key(self.jobs, a:id)
-      call jobstop(a:id)
+      try
+        let done = jobstop(a:id)
+      catch
+      endtry
       call remove(self.jobs, a:id)
-    else
-      call self.warn('No job with such id')
     endif
+    return done
   elseif self.vim_job
     if has_key(self.jobs, a:id)
       call job_stop(get(self.jobs, a:id))
@@ -182,16 +324,16 @@ function! s:self.stop(id) abort
   endif
 endfunction
 
-function! s:self.send(id, data) abort
+function! s:self.send(id, data) abort dict
   if self.nvim_job
     if has_key(self.jobs, a:id)
       if type(a:data) == type('')
-        call jobsend(a:id, [a:data, ''])
+        call jobsend(a:id, a:data . "\n")
       else
         call jobsend(a:id, a:data)
       endif
     else
-      call self.warn('No job with such id')
+      call self.warn('[job API] Failed to send data to job: ' . a:id)
     endif
   elseif self.vim_job
     if has_key(self.jobs, a:id)
@@ -203,14 +345,14 @@ function! s:self.send(id, data) abort
         call ch_sendraw(chanel, join(a:data, "\n"))
       endif
     else
-      call self.warn('No job with such id')
+      call self.warn('[job API] Failed to send data to job: ' . a:id)
     endif
   else
     call self.warn()
   endif
 endfunction
 
-function! s:self.status(id) abort
+function! s:self.status(id) abort dict
   if self.nvim_job
     if has_key(self.jobs, a:id)
       return get(self.jobs, a:id)[1]
@@ -220,15 +362,15 @@ function! s:self.status(id) abort
       return job_status(get(self.jobs, a:id))
     endif
   else
-    call self.warn('No job with such id!')
+    call self.warn('[job API] Failed to get job status: ' . a:id)
   endif
 endfunction
 
-function! s:self.list() abort
+function! s:self.list() abort dict
   return copy(self.jobs)
 endfunction
 
-function! s:self.info(id) abort
+function! s:self.info(id) abort dict
   let info = {}
   if self.nvim_job
     let info.status = self.status(a:id)
@@ -238,13 +380,24 @@ function! s:self.info(id) abort
     if has_key(self.jobs, a:id)
       return job_info(get(self.jobs, a:id))
     else
-      call self.warn('No job with such id!')
+      call self.warn('[job API] Failed to get job info: ' . a:id)
     endif
   else
     call self.warn()
   endif
 endfunction
 
-function! s:self.debug() abort
+function! s:self.chanclose(id, type) abort dict
+  if self.nvim_job
+    call chanclose(a:id, a:type)
+  elseif self.vim_job
+    if has_key(self.jobs, a:id) && a:type ==# 'stdin'
+      call ch_close_in(get(self.jobs, a:id))
+    endif
+  endif
+endfunction
+
+
+function! s:self.debug() abort dict
   echo join(self._message, "\n")
 endfunction

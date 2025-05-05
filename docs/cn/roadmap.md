@@ -1,60 +1,20 @@
 ---
-title:  "Roadmap"
-description: "The roadmap and milestones define the project direction and priorities."
-lang: cn
+title: "设计蓝图"
+description: "SpaceVim 设计蓝图和里程碑，这决定了 SpaceVim 的开发方向和特性实现的优先顺序。"
+lang: zh
 ---
 
-# Roadmap
+# [主页](../) >> 设计蓝图
 
-The roadmap and [milestones](https://github.com/SpaceVim/SpaceVim/milestones) define the project direction and priorities.
+设计蓝图决定了该项目的开发方向以及所有特性实现的优先顺序。
 
-## Next
+## 待办事项列表
 
-### [0.7](https://github.com/SpaceVim/SpaceVim/milestone/10)
+- `v2.4.0`
+  - [x] 使用 lua 重写状态栏插件
+  - [x] 使用 lua 重写 tabline
+  - [ ] 将网站内容合并至 `:h SpaceVim`
 
-## Meta
+## 已完成
 
-There are release milestones and meta milestones ("buckets"). 
-
-- Version-number milestones (0.1, 0.2, 0.3, …) assign issues to production releases.
-    - The nearest upcoming version is assigned a target date.
-    - Low-risk fixes in the current branch are first committed to the stable branch, then merged to master. For example, if the current stable release is `0.1.1` and a bug-fix is assigned to the `0.2` milestone, it does not mean users need to wait until 0.2 to get the fix. The patch will be committed to the stable branch and released in `0.1.2`. 
-- [todo](https://github.com/SpaceVim/SpaceVim/milestone/4) is a bucket for triaged tickets which should be on the roadmap but cannot yet be assigned to a concrete milestone.
-- [unplanned](https://github.com/SpaceVim/SpaceVim/milestone/5) is a bucket for low-priority items or items lacking a feasible path to completion.
-
-## Completed
-
-### [0.6](https://github.com/SpaceVim/SpaceVim/milestone/9)
-
-see the release note: [V0.5.0](https://github.com/SpaceVim/SpaceVim/milestone/9)
-
-### [0.5](https://github.com/SpaceVim/SpaceVim/milestone/8)
-
-see the release note: [V0.5.0](https://github.com/SpaceVim/SpaceVim/milestone/9)
-
-### [0.4](https://github.com/SpaceVim/SpaceVim/milestone/7)
-
-- Improve git work  flow
-  - completion in commit message buffer
-  - manager github issues annd PRs
-- Improve autocomplete layer
-
-### [0.3](https://github.com/SpaceVim/SpaceVim/milestone/3)
-
-- statusline with mode support
-- Plugin manager ui for dein
-- Improve mapping guide
-- Tabs manager
-- Layers manager
-
-### [0.2](https://github.com/SpaceVim/SpaceVim/milestone/2)
-
-- Mnemonic key bindings
-- Denite support
-- Unite work flow
-- Windows support
-
-### [0.1](https://github.com/SpaceVim/SpaceVim/milestone/1)
-
-- The primary goal of the 0.1 release ("first public release") is to reach a stable, functional baseline that can be built upon and used as a benchmark for further progress.
-- Layers feature
+所有已完成的功能可以在[更新日志](../development/#更新日志)查看

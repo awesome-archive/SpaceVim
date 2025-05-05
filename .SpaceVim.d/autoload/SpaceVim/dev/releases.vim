@@ -1,10 +1,31 @@
+"=============================================================================
+" releases.vim --- release script for SpaceVim
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
+" URL: https://spacevim.org
+" License: GPLv3
+"=============================================================================
+
+scriptencoding utf-8
+
+let s:log_pretty = 'tformat:%h%- %s'
+
+function! s:get_logs() abort
+  let cmd = ['git', 'log', '--graph', '--date=relative', '--pretty=' . s:log_pretty] + ['v1.8.0..HEAD'] 
+  return systemlist(cmd)
+endfunction
+
+function! Tget() abort
+  return s:get_logs()
+endfunction
+
 function! s:body() abort
   return 'SpaceVim development (pre-release:' . g:spacevim_version . ') build.'
 endfunction
 function! SpaceVim#dev#releases#open() abort
   let username = input('github username:')
   let password = input('github password:')
-  let is_dev = g:spacevim_version =~ 'dev'
+  let is_dev = g:spacevim_version =~# 'dev'
   let releases = {
         \ 'tag_name': (is_dev ? 'nightly' : g:spacevim_version),
         \ 'target_commitish': 'master',
@@ -22,75 +43,67 @@ function! SpaceVim#dev#releases#open() abort
   endif
 endfunction
 
-function! List(owner, repo, page) abort
-  return github#api#util#Get('repos/' . a:owner . '/' . a:repo . '/issues?state=closed&page=' . a:page , [])
-endfunction
-
-" v0.4.0 is released at https://github.com/SpaceVim/SpaceVim/pull/768
-" v0.5.0 is released at https://github.com/SpaceVim/SpaceVim/pull/966
-function! s:get_list_of_PRs() abort
-  let prs = []
-  for i in range(1, 10)
-    let issues = List('SpaceVim','SpaceVim', i)
-    call extend(prs, filter(issues, 'v:val["number"] > 966 && v:val["number"] < 1203'))
-  endfor
-  return filter(prs, 'has_key(v:val, "pull_request")')
-endfunction
-
-function! s:pr_to_list(pr) abort
-  return '- ' . a:pr.title . ' [#' . a:pr.number . '](' . a:pr.html_url . ')'
-endfunction
-let g:wsd = []
-function! SpaceVim#dev#releases#content()
+function! SpaceVim#dev#releases#content() abort
   let md = [
         \ '### SpaceVim release ' . g:spacevim_version
         \ ]
-  let adds = []
-  let changes = []
-  let fixs = []
-  let others = []
-  if g:wsd == []
-    let g:wsd =s:get_list_of_PRs() 
-  endif
-  for pr in g:wsd
-    if pr.title =~? '^ADD'
-      call add(adds, s:pr_to_list(pr))
-    elseif pr.title =~? '^CHANGE'
-      call add(changes, s:pr_to_list(pr))
-    elseif pr.title =~? '^FIX'
-      call add(fixs, s:pr_to_list(pr))
-    else
-      call add(others, s:pr_to_list(pr))
-    endif
-  endfor
-  if !empty(adds)
-    call add(md, '')
-    call add(md, '#### New Features')
-    call add(md, '')
-    call extend(md, adds)
-    call add(md, '')
-  endif
-  if !empty(changes)
-    call add(md, '')
-    call add(md, '#### Feature Changes')
-    call add(md, '')
-    call extend(md, changes)
-    call add(md, '')
-  endif
-  if !empty(fixs)
-    call add(md, '')
-    call add(md, '#### Bug Fixs')
-    call add(md, '')
-    call extend(md, fixs)
-    call add(md, '')
-  endif
-  if !empty(others)
-    call add(md, '')
-    call add(md, '#### Unmarked PRs')
-    call add(md, '')
-    call extend(md, others)
-    call add(md, '')
-  endif
+  let md = md + SpaceVim#dev#releases#parser_prs(s:get_logs(), 'en')
   return join(md, "\n")
+endfunction
 
+function! SpaceVim#dev#releases#parser_prs(...) abort
+  let is_cn = get(a:000, 0, '') ==# 'cn'
+  let feat = []
+  let fix = []
+  let docs = []
+  let doc = []
+  let style = []
+  let refactor = []
+  let pref = []
+  let test = []
+  let build = []
+  let ci = []
+  let chore = []
+  let revert = []
+  for log in s:get_logs()
+    let type = matchstr(log, '^\*\s\+\S*\s\zs[a-z]*')
+    try
+      exe printf('call add(%s, "%s")', type, log)
+    catch
+    endtry
+  endfor
+  let md = []
+  call add(md, is_cn ? '#### 新特性' : '#### New Features')
+  let md = md + feat
+  call add(md, is_cn ? '#### 问题修复' : '#### Bug Fixs')
+  let md = md + fix
+"
+" -  if !empty(adds)
+" -    call add(md, '')
+" -    call add(md, '')
+" -    call extend(md, adds)
+" -    call add(md, '')
+" -  endif
+" -  if !empty(changes)
+" -    call add(md, '')
+" -    call add(md, is_cn ? '#### 改变' : '#### Feature Changes')
+" -    call add(md, '')
+" -    call extend(md, changes)
+" -    call add(md, '')
+" -  endif
+" -  if !empty(fixs)
+" -    call add(md, '')
+" -    call add(md, '')
+" -    call extend(md, fixs)
+" -    call add(md, '')
+" -  endif
+" -  if !empty(others)
+" -    call add(md, '')
+" -    call add(md, is_cn ? '#### 未知' : '#### Unmarked PRs')
+" -    call add(md, '')
+" -    call extend(md, others)
+" -    call add(md, '')
+" -  endif
+ return md
+  
 endfunction

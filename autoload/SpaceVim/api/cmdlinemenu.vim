@@ -1,7 +1,7 @@
 "=============================================================================
 " cmdlinemenu.vim --- SpaceVim cmdlinemenu API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -39,7 +39,7 @@ function! s:parseItems(items) abort
   let items = {}
   for item in a:items
     let id = index(a:items, item) + 1
-    let items[id] = ['(' . id . ')' . item[0], item[1]]
+    let items[id] = ['(' . id . ')' . item[0]] + item[1:]
   endfor
   return items
 endfunction
@@ -54,11 +54,25 @@ endfunction
 " Create a cmdline selection menu from a list of {items}, each item should be a
 " list of two value in it, first one is the description, and the next one
 " should be a funcrc.
+"
+" Example:
+" >
+" let menu = SpaceVim#api#import('cmdlinemenu')
+" let ques = [
+"     \ ['basic mode', function('s:basic_mode')],
+"     \ ['dark powered mode', function('s:awesome_mode')],
+"     \ ]
+" call menu.menu(ques)
+" <
 
 function! s:menu(items) abort
+  let cancelled = 0
   let saved_more = &more
+  let save_cmdheight = &cmdheight
   set nomore
   let items = s:parseItems(a:items)
+  let &cmdheight = len(items) + 1
+  redrawstatus!
   let selected = '1'
   let exit = 0
   let indent = repeat(' ', 7)
@@ -75,32 +89,42 @@ function! s:menu(items) abort
         let menu .= indent . ' ' . items[id][0] . "\n"
       endif
     endfor
+    redraw!
     echo menu[:-2]
     let nr = getchar()
     if s:parseInput(nr) ==# '' || nr == 3
       let exit = 1
-      redraw
+      let cancelled = 1
+      normal! :
     elseif index(keys(items), nr2char(nr)) != -1  || nr == 13
       if nr != 13
         let selected = nr2char(nr)
       endif
       let Value =  items[selected][1]
-      redraw
+      normal! :
       if type(Value) == 2
-        call call(Value, [])
+        let args = get(items[selected], 2, [])
+        call call(Value, args)
       elseif type(Value) == type('') && !empty(Value)
         execute Value
       endif
       let exit = 1
-    elseif nr2char(nr) ==# 'j'
+    elseif nr2char(nr) ==# 'j' || nr ==# 9
       let selected = s:nextItem(keys(items), selected)
-      redraw
-    elseif nr2char(nr) ==# 'k'
+      normal! :
+    elseif nr2char(nr) ==# 'k' || nr ==# "\<S-Tab>"
       let selected = s:previousItem(keys(items), selected)
-      redraw
+      normal! :
+    else
+      normal! :
     endif
   endwhile
   let &more = saved_more
+  let &cmdheight = save_cmdheight
+  redraw!
+  if cancelled
+    echo 'cancelled!'
+  endif
 endfunction
 
 let s:api['menu'] = function('s:menu')

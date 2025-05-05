@@ -1,55 +1,60 @@
 ---
-title:  "主页"
-description: "SpaceVim is a community-driven vim distribution that seeks to provide layer feature."
-lang: cn
+title: "主页"
+description: "SpaceVim 是一个模块化的 Vim 和 Neovim 的配置集合，以模块的方式组织和管理插件，提高 Vim 环境配置效率。"
+lang: zh
 ---
 
-[![Build Status](https://travis-ci.org/SpaceVim/SpaceVim.svg?branch=dev)](https://travis-ci.org/SpaceVim/SpaceVim)
-[![Build status](https://ci.appveyor.com/api/projects/status/eh3t5oph70abp665/branch/dev?svg=true)](https://ci.appveyor.com/project/wsdjeg/spacevim/branch/dev)
-[![codecov](https://codecov.io/gh/SpaceVim/SpaceVim/branch/dev/graph/badge.svg)](https://codecov.io/gh/SpaceVim/SpaceVim/branch/dev)
-[![Version](https://img.shields.io/badge/version-0.7.0--dev-FF00CC.svg)](https://github.com/SpaceVim/SpaceVim/releases)
-[![GPLv3 License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/SpaceVim/SpaceVim/blob/dev/LICENSE)
-[![QQ](https://img.shields.io/badge/QQ群-121056965-blue.svg)](https://jq.qq.com/?_wv=1027&k=43DB6SG)
-[![Weibo](https://img.shields.io/badge/Weibo-%40SpaceVim-orange.svg)](https://weibo.com/SpaceVim)
-[![GitHub stars](https://img.shields.io/github/stars/SpaceVim/SpaceVim.svg?style=social&label=Star)](https://github.com/SpaceVim/SpaceVim)
+[![GPLv3 License](https://img.spacevim.org/license-GPLv3-blue.svg)](development/#证书)
 
-![welcome-page](https://user-images.githubusercontent.com/13142418/33793078-3446cb6e-dc76-11e7-9998-376a355557a4.png)
+![work-flow](https://img.spacevim.org/workflow.png)
 
-项 目 主 页： <https://spacevim.org>
+SpaceVim 是一个模块化的 Vim 和 Neovim 配置集合，它的灵感来自于 [spacemacs](https://www.spacemacs.org/)。
+以模块的方式组织插件及相关配置，将相关插件组合在一起提供完整的功能。
+这将使得插件配置更加简单，减少用户选择并配置插件的时间。
+仅需载入相关语言的模块即可得到一个开箱即用的 Vim IDE。
 
-Github 地址 : <https://github.com/SpaceVim/SpaceVim>
+- [入门指南](quick-start-guide/): 基本的安装以及配置示例，同时包括了针对不同语言的配置技巧。
+- [使用文档](documentation/): 完整的使用文档，详细介绍了每一个快捷键以及配置的功能。
+- [可用模块](layers/): 罗列了目前已经实现的所有模块，包括功能模块和语言模块。
 
-SpaceVim 是一个社区驱动的模块化 vim/neovim 配置集合，以模块的方式组织管理插件以
-及相关配置，为不同的语言开发量身定制了相关的开发模块，该模块提供代码自动补全，
-语法检查、格式化、调试、REPL 等特性。用户仅需载入相关语言的模块即可得到一个开箱
-即用的Vim-IDE。
+当前最新的稳定版为[v2.4.0](SpaceVim-release-v2.4.0/)，发布于2024年12月23日。
+[following-HEAD](following-head/) 页面罗列了自 `v2.3.0` 至今最新的更新以及变动。若需要了解项目的后续开发路线及计划，可以查阅[开发路线](roadmap/)页面。
 
-推荐阅读：
-
-- [入门指南](quick-start-guide)
-- [用户文档](documentation)
-- [可用模块](layers)
-
-## 最新特新
+## 最新消息
 
 <ul>
-    {% for post in site.categories.feature_cn offset: 0 limit: 5  %}
+    {% for post in site.categories.blog_cn offset: 0 limit: 5  %}
                <strong><a href="{{ post.url }}">{{ post.title }}</a></strong>
                <br>
                <span class="post-date">{{ post.date | date_to_string }}</span>
-               <p>{{ post.excerpt | truncatewords: 100 }}</p>
-               <br>
-               <img alt="{{ post.title }}" src="{{ post.image }}">
+               <p>{{ post.description | truncatewords: 100 }}</p>
     {% endfor %}
 </ul>
 
-更多精彩博客请订阅 [SpaceVim 中文博客](https://spacevim.org/cn/blog/)
+更多精彩内容会定期在 SpaceVim [博客](blog/)上发布。
 
-[关注微博 @SpaceVim](https://weibo.com/SpaceVim) 
+## 常见问题
 
-## 参与
+- 目前 SpaceVim 的开发状态如何？
 
-使用过程中遇到问题或者有什么功能需求可以在码云提交，这将更容易被关注
-和修复。我们也欢迎喜欢 vim/neovim 的用户加入我们的
-[QQ群(点击加入)](https://jq.qq.com/?_wv=1027&k=43zWPlT)，该群定期也会分享一些
-实用的 Vim 技巧以及插件。
+  当前最新发布的稳定版本是 v2.3.0。可以查看[Roadmap](roadmap/)获取开发计划。
+
+- SpaceVim 是尝试搭建一个 IDE 吗？
+
+  是的，通过模块的方式，将各种功能封装成相应的模块，对多种语言提供了语言开发模块，目标是尝试模拟简易的集成开发环境。
+
+- SpaceVim 支持多少种编程语言？
+
+  ```sh
+  ~/.SpaceVim> ls autoload/SpaceVim/layers/lang | wc -l
+  87
+  ```
+
+- SpaceVim 测试的 Vim 及 Neovim 版本包括哪些？
+
+  - vim: `8.2.3995` `9.1.0016`
+  - neovim: `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.9.5`, `v0.10.0`
+
+更多常见问题请阅读[常见问题解答](faq/)
+
+<!-- vim:set nowrap: -->

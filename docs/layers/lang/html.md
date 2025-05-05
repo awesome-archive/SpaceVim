@@ -3,13 +3,14 @@ title: "SpaceVim lang#html layer"
 description: "Edit html in SpaceVim, with this layer, this layer provides code completion, syntax checking and code formatting for html."
 ---
 
-# [SpaceVim Layers:](https://spacevim.org/layers) lang#html
+# [Available Layers](../../) >> lang#html
 
 <!-- vim-markdown-toc GFM -->
 
 - [Description](#description)
-- [Layer Installation](#layer-installation)
+- [Install](#install)
   - [Language server](#language-server)
+- [Layer options](#layer-options)
 - [Features](#features)
 - [Key bindings](#key-bindings)
 
@@ -19,9 +20,14 @@ description: "Edit html in SpaceVim, with this layer, this layer provides code c
 
 This layer adds support for editing HTML and CSS.
 
-## Layer Installation
+## Install
 
-To use this configuration layer, add `call SpaceVim#layers#load('lang#html')` to your custom configuration file.
+To use this configuration layer, update your custom configuration file with:
+
+```toml
+[[layers]]
+  name = "lang#html"
+```
 
 ### Language server
 
@@ -31,16 +37,28 @@ To install the language server, you need `npm` on your machine:
 npm install --global vscode-html-languageserver-bin
 ```
 
+## Layer options
+
+- `emmet_leader_key`: change the default leader key for emmet.
+- `emmet_filetyps`: Set the filetypes for enabling emmet
+
+  ```toml
+  [[layers]]
+    name = "lang#html"
+    emmet_leader_key = "<C-e>"
+    emmet_filetyps = ['html']
+  ```
+
 ## Features
 
-- Generate HTML and CSS coding using [neosnippet](https://github.com/Shougo/neosnippet.vim/) and [emmet-vim](https://github.com/mattn/emmet-vim)
-- Tags navigation on key % using matchit.vim
+- Generate HTML and CSS code using [neosnippet](https://github.com/Shougo/neosnippet.vim/) and [emmet-vim](https://github.com/mattn/emmet-vim)
+- Tags navigation on key `%` using vim-matchup
 - auto-completion
 - syntax checking
-- language server protocol (need `lsp` layer) 
+- language server protocol (need `lsp` layer)
 
 ## Key bindings
 
-| key bindings | Description  |
+| Key Bindings | Descriptions |
 | ------------ | ------------ |
-| `<C-e>`      | emmet prefix |
+| `Ctrl-e`     | emmet prefix |

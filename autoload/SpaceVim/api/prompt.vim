@@ -1,7 +1,7 @@
 "=============================================================================
 " prompt.vim --- SpaceVim prompt API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -23,12 +23,12 @@
 " <
 
 let s:self = {}
+let s:self.__cmp = SpaceVim#api#import('vim#compatible')
+let s:self.__vim = SpaceVim#api#import('vim')
 
 
 let s:self._keys = {
       \ 'close' : "\<Esc>",
-      \ 'cursor_back' : '<Left>',
-      \ 'cursor_forword' : '<Right>',
       \ }
 let s:self._prompt = {
       \ 'mpt' : '==>',
@@ -59,29 +59,46 @@ func! s:self.open() abort
   let &lazyredraw = save_redraw
 endf
 
-function! s:self._getchar(...) abort
-  let ret = call('getchar', a:000)
-  return (type(ret) == type(0) ? nr2char(ret) : ret)
-endfunction
+func! s:self._c_r_mode_off(timer) abort
+  let self._c_r_mode = 0
+endf
 
 func! s:self._handle_input(...) abort
   let begin = get(a:000, 0, '')
   if !empty(begin)
-    if self._oninputpro !=# ''
+    if type(self._oninputpro) ==# 2
       call call(self._oninputpro, [])
     endif
-    if self._handle_fly !=# ''
+    if type(self._handle_fly) ==# 2
       call call(self._handle_fly, [self._prompt.begin . self._prompt.cursor . self._prompt.end])
     endif
     call self._build_prompt()
   endif
+  let self._c_r_mode = 0
   while self._quit == 0
-    let char = self._getchar()
+    let char = self.__vim.getchar()
     if has_key(self._function_key, char)
       call call(self._function_key[char], [])
       continue
     endif
-    if char ==# "\<Right>"
+    if self._c_r_mode ==# 1
+      if char =~# '^[a-zA-Z0-9"+:/]$'
+        let reg = '@' . char
+        let paste = get(split(eval(reg), "\n"), 0, '')
+        let self._prompt.begin = self._prompt.begin . paste
+        let self._prompt.cursor = matchstr(self._prompt.end, '.$')
+        let self._c_r_mode = 0
+        call self._build_prompt()
+      else
+        let self._c_r_mode = 0
+        continue
+      endif
+    elseif char ==# "\<C-r>"
+      let self._c_r_mode = 1
+      call timer_start(2000, self._c_r_mode_off)
+      call self._build_prompt()
+      continue
+    elseif char ==# "\<Right>"
       let self._prompt.begin = self._prompt.begin . self._prompt.cursor
       let self._prompt.cursor = matchstr(self._prompt.end, '^.')
       let self._prompt.end = substitute(self._prompt.end, '^.', '', 'g')
@@ -120,7 +137,8 @@ func! s:self._handle_input(...) abort
     elseif char ==# "\<bs>"
       let self._prompt.begin = substitute(self._prompt.begin,'.$','','g')
       call self._build_prompt()
-    elseif char == self._keys.close
+    elseif (type(self._keys.close) == 1 && char == self._keys.close)
+          \ || (type(self._keys.close) == 3 && index(self._keys.close, char) > -1 )
       call self.close()
       break
     elseif char ==# "\<FocusLost>" || char ==# "\<FocusGained>" || char2nr(char) == 128
@@ -129,24 +147,26 @@ func! s:self._handle_input(...) abort
       let self._prompt.begin .= char
       call self._build_prompt()
     endif
-    if self._oninputpro !=# ''
+    if type(self._oninputpro) ==# 2
       call call(self._oninputpro, [])
     endif
-    if self._handle_fly !=# ''
+    if type(self._handle_fly) ==# 2
       call call(self._handle_fly, [self._prompt.begin . self._prompt.cursor . self._prompt.end])
     endif
   endwhile
 endf
 
 func! s:self._build_prompt() abort
-  normal! :
-  echohl Comment | echon self._prompt.mpt
+  let ident = repeat(' ', self.__cmp.win_screenpos(0)[1] - 1)
+  redraw
+  echohl Comment | echon ident . self._prompt.mpt
   echohl None | echon self._prompt.begin
   echohl Wildmenu | echon self._prompt.cursor
   echohl None | echon self._prompt.end
-  if empty(self._prompt.cursor) && !has('nvim')
+  if empty(self._prompt.cursor) && (has('nvim-0.5.0') || !has('nvim'))
     echohl Comment | echon '_' | echohl None
   endif
+  " FIXME: Macvim need extra redraw, 
 endf
 
 function! s:self._clear_prompt() abort
@@ -159,7 +179,7 @@ function! s:self._clear_prompt() abort
 endfunction
 
 function! s:self.close() abort
-  if self._onclose !=# ''
+  if type(self._onclose) ==# 2
     call call(self._onclose, [])
   endif
   call self._clear_prompt()

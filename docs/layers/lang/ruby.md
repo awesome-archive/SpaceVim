@@ -1,62 +1,127 @@
 ---
 title: "SpaceVim lang#ruby layer"
-description: "This layer is for ruby development, provide autocompletion, syntax checking, code format for ruby file."
+description: "This layer is for Ruby development, provides autocompletion, syntax checking and code formatting for Ruby files."
 ---
 
-# [SpaceVim Layers:](https://spacevim.org/layers) lang#ruby
+# [Available Layers](../../) >> lang#ruby
 
 <!-- vim-markdown-toc GFM -->
 
 - [Description](#description)
-- [Installation](#installation)
+- [Install](#install)
   - [Layer](#layer)
-  - [Syntax checking && Code formatting](#syntax-checking--code-formatting)
+- [Layer options](#layer-options)
 - [Key bindings](#key-bindings)
   - [Inferior REPL process](#inferior-repl-process)
-  - [RuboCop](#rubocop)
   - [Running current script](#running-current-script)
 
 <!-- vim-markdown-toc -->
 
 ## Description
 
-This layer is for ruby development.
+This layer is for Ruby development. Including following features:
 
-## Installation
+- code completion for ruby, requires `+ruby`
+- syntax highlight
+- syntax linter
+- language server protocol
+
+## Install
 
 ### Layer
 
-To use this configuration layer, add `SPLayer 'lang#ruby'` to your custom configuration file.
+To use this configuration layer, update your custom configuration file with:
 
-### Syntax checking && Code formatting
+```toml
+[[layers]]
+  name = "lang#ruby"
+```
 
-To enable syntax checking and code formatting in spacevim, you need to install [cobocop](https://github.com/bbatsov/rubocop).
+The default syntax linter for ruby is [rubylint](https://gitlab.com/yorickpeterse/ruby-lint).
 
-```sh
+```
+gem install ruby-lint
+```
+
+The default code formatter is [rubocop](https://github.com/bbatsov/rubocop).
+
+```
 gem install rubocop
 ```
 
+## Layer options
+
+- `ruby_file_head`: Default file head when a new file is created.
+
+  By default, when create a new ruby file, SpaceVim will insert the file head automatically.
+  to change the file head, use the `ruby_file_head` option:
+
+  ```toml
+  [[layers]]
+    name = "lang#ruby"
+    ruby_file_head = [
+        '#!/usr/bin/ruby -w',
+        '# -*- coding: utf-8 -*-',
+        '',
+        ''
+    ]
+  ```
+
+- `repl_command`: Set the REPL command for ruby.
+
+  ```toml
+  [[layers]]
+    name = 'lang#ruby'
+    repl_command = '~/download/bin/ruby_repl'
+  ```
+
+- `format_on_save`: Enable/disable code formatting when saving ruby file. Default is `false`.
+  To enable this feature:
+
+  ```toml
+  [[layers]]
+      name = 'lang#ruby'
+      format_on_save = true
+  ```
+
+- `enabled_linters`: Set the default linters for ruby language, by default it is `['rubylint']`. You can change
+  it to `['rubylint, 'rubocop']`.
+  ```toml
+  [[layers]]
+    name = 'lang#ruby'
+    enabled_linters = ['rubylint', 'rubocop']
+  ```
 
 ## Key bindings
 
 ### Inferior REPL process
 
-Start a `irb` inferior REPL process with `SPC l s i`. 
+Start a `irb` inferior REPL process with `SPC l s i`.
+You may change the REPL command by layer option `repl_command`.
+For example, if you want to use `pry`, load this layer via:
+
+```toml
+[[layers]]
+    name = "lang#ruby"
+    repl_command = "pry"
+```
+
+however, if the executable is not on your $PATH, then you need to specify a complete file path.
+
+```toml
+[[layers]]
+    name = "lang#ruby"
+    repl_command = "/path/to/pry"
+```
 
 Send code to inferior process commands:
 
-| Key Binding | Description                                      |
-| ----------- | ------------------------------------------------ |
-| `SPC l s b` | send buffer and keep code buffer focused         |
-| `SPC l s l` | send line and keep code buffer focused           |
-| `SPC l s s` | send selection text and keep code buffer focused |
-
-### RuboCop
-
-| Key Binding | Description                                |
-| ----------- | ------------------------------------------ |
-| `SPC l c f` | Runs RuboCop on the currently visited file |
+| Key Bindings | Descriptions                                     |
+| ------------ | ------------------------------------------------ |
+| `SPC l s b`  | send buffer and keep code buffer focused         |
+| `SPC l s l`  | send line and keep code buffer focused           |
+| `SPC l s s`  | send selection text and keep code buffer focused |
 
 ### Running current script
 
-To running a ruby script, you can press `SPC l r` to run current file without loss focus, and the result will be shown in a runner buffer.
+To run a Ruby script, you can press `SPC l r` to run the current file without losing focus, and the result will be shown in a runner buffer.

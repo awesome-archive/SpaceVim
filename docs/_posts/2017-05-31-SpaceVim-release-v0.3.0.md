@@ -1,12 +1,13 @@
 ---
 title: SpaceVim release v0.3.0
-categories: changelog
-excerpt: "Here you can check what has been done so far."
-type: NewsArticle
+categories: [changelog, blog]
+description: "The major change happend in v0.3.0 is new mapping guide and custom mapping prefix SPC."
+type: article
+commentsID: "SpaceVim release v0.3.0"
 comments: true
 ---
 
-# [Changelogs](https://spacevim.org/development#changelog) > SpaceVim release v0.3.0
+# [Changelogs](../development#changelog) > SpaceVim release v0.3.0
 
 ## FEATURES
 
@@ -14,7 +15,7 @@ comments: true
 
 for example, after pressing `<Space>` in normal mode, you will see :
 
-![mapping guide](https://cloud.githubusercontent.com/assets/13142418/25778673/ae8c3168-3337-11e7-8536-ee78d59e5a9c.png)
+![mapping guide](https://img.spacevim.org/ae8c3168-3337-11e7-8536-ee78d59e5a9c.png)
 
 for more information about mapping guide, please read the [documentation](http://spacevim.org/documentation/#mappings-guide).
 
@@ -22,7 +23,7 @@ for more information about mapping guide, please read the [documentation](http:/
 
 here is an picture for this feature:
 
-![search status](https://cloud.githubusercontent.com/assets/13142418/26313080/578cc68c-3f3c-11e7-9259-a27419d49572.png)
+![search status](https://img.spacevim.org/578cc68c-3f3c-11e7-9259-a27419d49572.png)
 
 please checkout statusline [documentation](http://spacevim.org/documentation/#statusline) for all the shortcuts.
 

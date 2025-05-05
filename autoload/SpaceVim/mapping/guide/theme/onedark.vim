@@ -1,7 +1,7 @@
 "=============================================================================
 " onedark.vim --- onedark theme for SpaceVim
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -16,5 +16,7 @@ function! SpaceVim#mapping#guide#theme#onedark#palette() abort
                 \ ['#282c34', '#00af87', 235, 36],
                 \ ['#282c34', '#ff8700', 235, 208],
                 \ ['#282c34', '#af5f5f', 235, 131],
+                \ ['#282828', '#689d6a', 235, 72],
+                \ ['#282828', '#8f3f71', 235, 132],
                 \ ]
 endfunction

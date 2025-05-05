@@ -1,31 +1,63 @@
 ---
-title: "SpaceVim lang#javascript layer"
-description: "This layer is for haskell development"
+title: "SpaceVim lang#haskell layer"
+description: "Haskell language support for SpaceVim, includes code completion, syntax checking, jumping to definition, also provides language server protocol support for Haskell"
 ---
 
-# [SpaceVim Layers:](https://spacevim.org/layers) lang#haskell
+# [Available Layers](../../) >> lang#haskell
 
 <!-- vim-markdown-toc GFM -->
 
 - [Description](#description)
-- [Layer Installation](#layer-installation)
+- [Install](#install)
 - [Features](#features)
+- [Key bindings](#key-bindings)
+  - [Running current script](#running-current-script)
+  - [Inferior REPL process](#inferior-repl-process)
 
 <!-- vim-markdown-toc -->
 
 ## Description
 
-This layer is for haskell development.
+This layer is for Haskell development. This layer includes following plugins:
 
-## Layer Installation
+- haskell.vim: syntax highlight and indent
+- vim-syntax-shakespeare: syntax files for the shakespeare templating languages
+- neco-ghc: completion plugin for Haskell
 
-To use this configuration layer, add `call SpaceVim#layers#load('lang#haskell')` to your custom configuration file.
+## Install
+
+To use this configuration layer, update your custom configuration file with:
+
+```toml
+[[layers]]
+  name = "lang#haskell"
+```
+
+After updating configuration file, restart SpaceVim and run `:SPInstall`.
 
 ## Features
 
-- auto-completion
+- code completion
 - syntax checking
 - goto definition
 - refernce finder
-- language server protocol (need lsp layer) 
+- language server protocol (need lsp layer)
 
+## Key bindings
+
+### Running current script
+
+To run a haskell file, you can press `SPC l r` to run the current file
+without losing focus, and the result will be shown in a runner buffer.
+
+### Inferior REPL process
+
+Start a `ghci` inferior REPL process with `SPC l s i`.
+
+Send code to inferior process commands:
+
+| Key Bindings | Descriptions                                     |
+| ------------ | ------------------------------------------------ |
+| `SPC l s b`  | send buffer and keep code buffer focused         |
+| `SPC l s l`  | send line and keep code buffer focused           |
+| `SPC l s s`  | send selection text and keep code buffer focused |

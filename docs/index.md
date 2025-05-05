@@ -1,70 +1,61 @@
 ---
-title:  "Home"
-description: "SpaceVim is a community-driven vim distribution that seeks to provide layer feature."
+title: "Home"
+description: "SpaceVim is a modular Vim/Neovim configuration that seeks to provide layer feature."
 ---
 
-[![Gitter](https://badges.gitter.im/SpaceVim/SpaceVim.svg)](https://gitter.im/SpaceVim/SpaceVim)
-[![Build Status](https://travis-ci.org/SpaceVim/SpaceVim.svg?branch=dev)](https://travis-ci.org/SpaceVim/SpaceVim)
-[![Build status](https://ci.appveyor.com/api/projects/status/eh3t5oph70abp665/branch/dev?svg=true)](https://ci.appveyor.com/project/wsdjeg/spacevim/branch/dev)
-[![codecov](https://codecov.io/gh/SpaceVim/SpaceVim/branch/dev/graph/badge.svg)](https://codecov.io/gh/SpaceVim/SpaceVim/branch/dev)
-[![Version](https://img.shields.io/badge/version-0.7.0--dev-FF00CC.svg)](https://github.com/SpaceVim/SpaceVim)
-[![GPLv3 License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/SpaceVim/SpaceVim/blob/master/LICENSE)
+[![GPLv3 License](https://img.spacevim.org/license-GPLv3-blue.svg)](development/#license)
 
-![welcome-page](https://user-images.githubusercontent.com/13142418/33793078-3446cb6e-dc76-11e7-9998-376a355557a4.png)
+![work-flow](https://img.spacevim.org/workflow.png)
 
+SpaceVim is a modular configuration of Vim and Neovim.
+It's inspired by spacemacs. It manages collections of plugins in layers,
+which help to collect related packages together to provide features.
+This approach helps keep the configuration organized and reduces
+overhead for the user by keeping them from having to think about
+what packages to install.
 
-# SpaceVim - Modern vim distribution 
+- [Quick start guide](quick-start-guide/): installation, configuration, and learning resources for SpaceVim
+- [Documentation](documentation/): the primary official documentation of SpaceVim
+- [Available layers](layers/): a list of available layers which can be used in SpaceVim
 
-SpaceVim is a distribution of the vim editor that's inspired by spacemacs.
-It manages collections of plugins in layers, which help collect related
-packages together to provide features. For example, the python layer collects
-deoplete.nvim, neomake and jedi-vim together to provide autocompletion,
-syntax checking, and documentation lookup. This approach helps keep
-configuration organized and reduces overhead for the user by keeping them
-from having to think about what packages to install.
+The project is currently under active development and the latest stable release is [v2.4.0](SpaceVim-release-v2.4.0/) which was released at 2024-12-22,
+check out [following-HEAD](following-head/) page for what happened since last release. The [roadmap](roadmap/) page defines the project direction and priorities.
 
-If you like SpaceVim, feel free to star the project on github - it is a great way to show your
-appreciation while providing us motivation to continue working on this project.
-The extra visibility for the project doesn't hurt either!
-
-See the [Quick start guide](quick-start-guide), [documentation](documentation) or the [available layers](http://spacevim.org/layers/) for more information.
-
-## New features
+## News
 
 <ul>
-    {% for post in site.categories.feature offset: 0 limit: 5  %}
+    {% for post in site.categories.blog offset: 0 limit: 5  %}
                <strong><a href="{{ post.url }}">{{ post.title }}</a></strong>
                <br>
                <span class="post-date">{{ post.date | date_to_string }}</span>
-               <p>{{ post.excerpt | truncatewords: 100 }}</p>
-               <br>
-               <img alt="{{ post.title }}" src="{{ post.image }}">
+               <p>{{ post.description | truncatewords: 100 }}</p>
     {% endfor %}
 </ul>
 
-More posts are in the [SpaceVim's Blog](https://spacevim.org/blog/)
-
-[Follow @SpaceVim](https://twitter.com/SpaceVim) 
-
-## Participating
-
-Discuss the project at [gitter.im/SpaceVim](https://gitter.im/SpaceVim/SpaceVim) or [/r/SpaceVim](https://www.reddit.com/r/SpaceVim/)
-
-Contribute code, report bugs and request features at [GitHub](https://github.com/SpaceVim/SpaceVim). 
+More posts are available on the [blog](blog/) of SpaceVim.
 
 ## FAQ
 
-1. What is the project status?
+- Is SpaceVim trying to turn Vim/Neovim into an IDE?
 
-The current stable version is 0.5.0. See the [milestones page](https://github.com/SpaceVim/SpaceVim/milestones) for development progress and the [roadmap](https://spacevim.org/roadmap/) for high-level plans.
+  With layers feature, this version of Vim distribution try to turn Vim/Neovim into an IDE for many languages.
 
-2. Is SpaceVim trying to turn Vim/Neovim into an IDE?
+- How many programming languages does SpaceVim support?
 
-With layers feature, this version of vim distribution try to turn vim/neovim into an IDE for many languages.
+  ```
+  ~/.SpaceVim> ls autoload/SpaceVim/layers/lang | wc -l
+  87
+  ```
 
-3. Which version of vim/neovim is needed?
+- Which version of vim or neovim should be installed for SpaceVim?
 
-vim 7.4/neovim v0.1.7, and `+lua` or `+python3` is needed.
+  The following versions have been tested:
 
+  - vim: `8.2.3995` `9.1.0016`
+  - neovim: `v0.6.0`, `v0.7.0`, `v0.8.0`, `v0.9.0`, `v0.9.5`, `v0.10.0`
+
+  It is recommended to use neovim v0.9.5+
+
+For more general questions, please read the SpaceVim [FAQ](faq/).
 
 <!-- vim:set nowrap: -->

@@ -1,7 +1,7 @@
 "=============================================================================
 " messletters.vim --- SpaceVim messletters API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -31,7 +31,7 @@ let s:chars['bubble_num'] = function('s:bubble_num')
 " 1: 1 ➛ ➀
 " 2: 1 ➛ ⓵
 function! s:circled_num(num, type) abort
-  " http://www.unicode.org/charts/beta/nameslist/n_2460.html
+  " https://www.unicode.org/charts/beta/nameslist/n_2460.html
   if a:type == 0
     if a:num == 0
       return nr2char(9471)
@@ -58,6 +58,8 @@ function! s:circled_num(num, type) abort
     else
       return ''
     endif
+  elseif a:type == 3
+    return a:num
   endif
 endfunction
 
@@ -76,7 +78,7 @@ let s:chars['index_num'] = function('s:index_num')
 
 
 function! s:parenthesized_num(num) abort
-  " http://www.unicode.org/charts/beta/nameslist/n_2460.html
+  " https://www.unicode.org/charts/beta/nameslist/n_2460.html
   if index(range(1, 20), a:num) != -1
     return nr2char(9331 + a:num)
   else
@@ -87,7 +89,7 @@ endfunction
 let s:chars['parenthesized_num'] = function('s:parenthesized_num')
 
 function! s:num_period(num) abort
-  " http://www.unicode.org/charts/beta/nameslist/n_2460.html
+  " https://www.unicode.org/charts/beta/nameslist/n_2460.html
   if index(range(1, 20), a:num) != -1
     return nr2char(9351 + a:num)
   else
@@ -98,7 +100,7 @@ endfunction
 let s:chars['num_period'] = function('s:num_period')
 
 function! s:parenthesized_letter(letter) abort
-  " http://www.unicode.org/charts/beta/nameslist/n_2460.html
+  " https://www.unicode.org/charts/beta/nameslist/n_2460.html
   if index(range(1, 26), char2nr(a:letter) - 96) != -1
     return nr2char(9371 + char2nr(a:letter) - 96)
   else
@@ -109,7 +111,7 @@ endfunction
 let s:chars['parenthesized_letter'] = function('s:parenthesized_letter')
 
 function! s:circled_letter(letter) abort
-  " http://www.unicode.org/charts/beta/nameslist/n_2460.html
+  " https://www.unicode.org/charts/beta/nameslist/n_2460.html
   if index(range(1, 26), char2nr(a:letter) - 64) != -1
     return nr2char(9397 + char2nr(a:letter) - 64)
   elseif index(range(1, 26), char2nr(a:letter) - 96) != -1

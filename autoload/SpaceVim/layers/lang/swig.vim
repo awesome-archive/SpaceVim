@@ -1,11 +1,20 @@
 "=============================================================================
 " swig.vim --- SpaceVim lang#swig layer
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
 
+""
+" @section lang#swig, layers-lang-swig
+" @parentsection layers
+" This layer is for swig development, including syntax highlighting and
+" indent. To enable it:
+" >
+"   [[layers]]
+"     name = "lang#swig"
+" <
 
 function! SpaceVim#layers#lang#swig#plugins() abort
     let plugins = []
@@ -15,4 +24,10 @@ endfunction
 
 function! SpaceVim#layers#lang#swig#config() abort
     
+endfunction
+
+function! SpaceVim#layers#lang#swig#health() abort
+  call SpaceVim#layers#lang#swig#plugins()
+  call SpaceVim#layers#lang#swig#config()
+  return 1
 endfunction

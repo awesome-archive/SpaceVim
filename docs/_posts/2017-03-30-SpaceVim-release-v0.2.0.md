@@ -1,12 +1,13 @@
 ---
 title: SpaceVim release v0.2.0
-categories: changelog
-excerpt: "Mnemonic key bindings in SpaceVim"
-type: NewsArticle
+categories: [changelog, blog]
+description: "Mnemonic key bindings in SpaceVim"
+type: article
+commentsID: "SpaceVim release v0.2.0"
 comments: true
 ---
 
-# [Changelogs](https://spacevim.org/development#changelog) > SpaceVim release v0.2.0
+# [Changelogs](../development#changelog) > SpaceVim release v0.2.0
 
 SpaceVim is a community-driven vim distribution inspired by spacemacs. 
 

@@ -1,14 +1,14 @@
 ---
 title: "SpaceVim checkers layer"
-description: "This layer provides syntax checking feature"
+description: "Syntax checking automatically within SpaceVim, display error on the sign column and statusline."
 ---
 
-# [SpaceVim Layers:](https://spacevim.org/layers) checkers
+# [Available Layers](../) >> checkers
 
 <!-- vim-markdown-toc GFM -->
 
 - [Description](#description)
-- [Layer Installation](#layer-installation)
+- [Install](#install)
 - [Configuration](#configuration)
 - [Key bindings](#key-bindings)
 
@@ -18,35 +18,52 @@ description: "This layer provides syntax checking feature"
 
 This layer provides syntax checking feature.
 
-## Layer Installation
+## Install
 
-checkers layer is loaded by default.
+To use this configuration layer, add following snippet to your custom configuration file.
+This layer is enabled by default.
+
+```toml
+[[layers]]
+  name = "checkers"
+```
 
 ## Configuration
 
-By default, the error will be display below current line, if you want to disabled this feature, you may need to load this layer with `show_cursor_error` to 0.
+The checkers layer is loaded by default, there are two kinds options for this layer:
+global options and layer options.
 
-```vim
-call SpaceVim#layers#load('checkers', {
-    \ 'show_cursor_error' : 0,
-    \ })
+**Global options:**
+
+All of the SpaceVim global options should be put into the `[options]` section.
+
+| Name          | default value | description         |
+| ------------- | ------------- | ------------------- |
+| `lint_engine` | `neomake`     | Set the lint engine |
+
+The default lint engine is `neomake`, you can also use `ale` or `syntastic`.
+
+If you want to configure neomake, you can use bootstrap functions. Within bootstrap functions,
+you can use vim script. For all the info about neomake configuration, please checkout `:h neomake`.
+
+**Layer options:**
+
+By default, the error will be displayed below the current line, if you want to disabled this
+feature, you may need to load this layer with `show_cursor_error` to `false`.
+
+| Name                    | default value | description                                              |
+| ----------------------- | ------------- | -------------------------------------------------------- |
+| `lint_on_the_fly`       | `false`       | Syntax checking on the fly feature, disabled by default. |
+| `lint_on_save`          | `true`        | Run syntax checking when saving a file.                  |
+| `show_cursor_error`     | `true`        | Enable/Disable displaying error below current line.      |
+| `lint_exclude_filetype` | `[]`          | Set the filetypes which does not enable syntax checking. |
+| `open_error_list`       | `1/2/0`       | Open the language checking windows. Defaults to 2        |
+
+```toml
+[[layers]]
+  name = "checkers"
+  show_cursor_error = false
 ```
-
-
-| Name                         | default value | description                                              |
-| ---------------------------- | ------------- | -------------------------------------------------------- |
-| `g:spacevim_enable_neomake`  | 1             | Use neomake as default checking tools                    |
-| `g:spacevim_enable_ale`      | 0             | Use ale as default checking tools                        |
-| `g:spacevim_lint_on_the_fly` | 0             | Syntax checking on the fly feature, disabled by default. |
-
-**NOTE:** if you want to use  ale, you need:
-
-```viml
-let g:spacevim_enable_neomake = 0
-let g:spacevim_enable_ale = 1
-```
-
-and if you want to use syntastic, set this two options to 0.
 
 ## Key bindings
 
@@ -61,7 +78,7 @@ and if you want to use syntastic, set this two options to 0.
 | `SPC e l` | Normal | display a list of all the errors                             |
 | `SPC e L` | Normal | display a list of all the errors and focus the errors buffer |
 | `SPC e e` | Normal | explain the error at point                                   |
-| `SPC e s` | Normal | set syntax checker (TODO)                                           |
-| `SPC e S` | Normal | set syntax checker executable (TODO)                                |
+| `SPC e s` | Normal | set syntax checker (TODO)                                    |
+| `SPC e S` | Normal | set syntax checker executable (TODO)                         |
 | `SPC e v` | Normal | verify syntax setup                                          |
 | `SPC t s` | Normal | toggle syntax                                                |

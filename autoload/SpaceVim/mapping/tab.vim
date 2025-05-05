@@ -1,7 +1,7 @@
 "=============================================================================
 " tab.vim --- tab key binding
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -20,20 +20,32 @@ if g:spacevim_snippet_engine ==# 'neosnippet'
     elseif neosnippet#expandable_or_jumpable() && getline('.')[col('.')-2] !=#'('
       return "\<plug>(neosnippet_expand_or_jump)"
     elseif pumvisible()
+          \ ||
+          \ (
+          \   g:spacevim_autocomplete_method ==# 'nvim-cmp'
+          \   && luaeval("require('cmp').visible()")
+          \ )
       return "\<C-n>"
-    elseif complete_parameter#jumpable(1) && getline('.')[col('.')-2] !=# ')'
+    elseif g:spacevim_autocomplete_method ==# 'coc' && coc#pum#visible()
+      return coc#pum#next(1)
+    elseif has('patch-7.4.774')
+          \ && g:spacevim_autocomplete_method !=# 'nvim-cmp'
+          \ && complete_parameter#jumpable(1)
+          \ && getline('.')[col('.')-2] !=# ')'
       return "\<plug>(complete_parameter#goto_next_parameter)"
     else
       return "\<tab>"
     endif
   endfunction
 elseif g:spacevim_snippet_engine ==# 'ultisnips'
-  function! SpaceVim#mapping#tab#expandable()
+  function! SpaceVim#mapping#tab#expandable() abort
     let snippet = UltiSnips#ExpandSnippetOrJump()
     if g:ulti_expand_or_jump_res > 0
       return snippet
     elseif pumvisible()
       return "\<C-n>"
+    elseif g:spacevim_autocomplete_method ==# 'coc' && coc#pum#visible()
+      return coc#pum#next(1)
     else
       return "\<TAB>"
     endif
@@ -45,6 +57,5 @@ elseif g:spacevim_snippet_engine ==# 'ultisnips'
     return "\<C-R>=SpaceVim#mapping#tab#expandable()\<cr>"
   endfunction
 endif
-
 
 " vim:set et sw=2 cc=80:

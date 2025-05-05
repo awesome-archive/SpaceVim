@@ -1,10 +1,31 @@
 "=============================================================================
 " dict.vim --- SpaceVim dict API
-" Copyright (c) 2016-2017 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
+
+""
+" @section data#dict, api-data-dict
+" @parentsection api
+" provides some functions to manipulate a dict.
+"
+" make({keys}, {values}[, {fill}])
+" 
+"   make a dictionary from two list, the {keys} and {values}.
+"
+" swap({dict})
+"
+"   swap the keys and values in a dictionary.
+"
+" make_index
+"
+"   make a dictionary from a list, use 
+
+
+
+
 
 function! SpaceVim#api#data#dict#get() abort
   return map({
@@ -24,6 +45,20 @@ function! SpaceVim#api#data#dict#get() abort
         \ )
 endfunction
 
+
+" if get(g:, '_spacevim_if_lua', 0) || has('nvim')
+" function! s:entrys(dict) abort
+" lua require("spacevim.api.data.dict").entrys(
+" \ require("spacevim").eval("a:dict")
+" \ )
+" endfunction
+" function! s:pick(dict, keys) abort
+" lua require("spacevim.api.data.dict").pick(
+" \ require("spacevim").eval("a:dict"),
+" \ require("spacevim").eval("a:keys")
+" \ )
+" endfunction
+" else
 function! s:entrys(dict) abort
   let entrys = []
   for key in keys(a:dict)
@@ -31,6 +66,16 @@ function! s:entrys(dict) abort
   endfor
   return entrys
 endfunction
+function! s:pick(dict, keys) abort
+  let new_dict = {}
+  for key in a:keys
+    if has_key(a:dict, key)
+      let new_dict[key] = a:dict[key]
+    endif
+  endfor
+  return new_dict
+endfunction
+" endif
 
 function! s:make(keys, values, ...) abort
   let dict = {}
@@ -56,15 +101,6 @@ function! s:make_index(list, ...) abort
   return s:make(a:list, [], value)
 endfunction
 
-function! s:pick(dict, keys) abort
-  let new_dict = {}
-  for key in a:keys
-    if has_key(a:dict, key)
-      let new_dict[key] = a:dict[key]
-    endif
-  endfor
-  return new_dict
-endfunction
 
 function! s:omit(dict, keys) abort
   let new_dict = copy(a:dict)

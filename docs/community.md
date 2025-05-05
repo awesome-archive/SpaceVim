@@ -1,36 +1,33 @@
 ---
-title:  "Community"
-description: "A list for community channels for SpaceVim."
+title: "Community"
+description: "A list of SpaceVim's public channels, All messages are bridged between IRC, gitter, telegram, matrix and slack"
 ---
 
 # Community
 
-Visit these resources for help or general questions.
+<!-- vim-markdown-toc GFM -->
 
-## Discuss
+- [News](#news)
+- [Asking for help](#asking-for-help)
+- [Feedback](#feedback)
 
-- <i class="fab fa-github"></i> [GitHub](https://github.com/SpaceVim/SpaceVim)
-- <i class="fab fa-reddit"></i> [Reddit](https://reddit.com/r/spacevim)
-- <i class="fab fa-twitter"></i> [Twitter](https://twitter.com/SpaceVim)
-- <i class="fab fa-facebook"></i> [Facebook](https://www.facebook.com/SpaceVim)
-- <i class="fab fa-google-plus-g"></i> [google plus](https://plus.google.com/communities/106181012794584190200)
-- <i class="fas fa-envelope"></i> [google groups](https://groups.google.com/forum/#!forum/spacevim)
-- <i class="fab fa-youtube"></i> [YouTube](https://www.youtube.com/channel/UC-3q4dVFS7gBpxhrON1WxIA)
+<!-- vim-markdown-toc -->
 
-## Ask
+## News
 
-- Try [vi.stackexchange.com](https://vi.stackexchange.com/) for **usage and configuration questions**.
-- [issue tracker](https://github.com/SpaceVim/SpaceVim/issues) for issue and feature requests
+The news about spacevim will be post on twitter, feel free to follow them:
 
-## Chat
+- <i class="fab fa-twitter"></i> [Twitter #spacevim](https://x.com/hashtag/spacevim?f=live)
 
-All of these channels are bridged together. Click on one of the badges below to join the chat, In all of these channels, messages from `SpaceVimBot` is sent by remote user, and the format of the remote messages is:
+## Asking for help
 
-    "[{PROTOCOL}] <{NICK}> {MESSAGE}"
+If you have any questions about using SpaceVim,
+check out the following context first, which may contain the answers:
 
-- <i class="fab fa-gitter"></i> [`SpaceVim/SpaceVim` on Gitter](https://gitter.im/SpaceVim/SpaceVim)
-- <i class="fas fa-comments"></i> [`#spacevim` on FreeNode](https://webchat.freenode.net/?channels=spacevim)
-- <i class="fab fa-telegram-plane"></i> [`t.me/SpaceVim` on telegram](https://t.me/SpaceVim)
-- <i class="fab fa-rocketchat"></i> [`#spacevim:matrix.org` on Matrix](https://riot.im/app/#/room/%23spacevim:matrix.org)
-- <i class="fab fa-slack-hash"></i> [`#spacevim` on slack](https://spacevim.slack.com/messages/C88CTJ62J)
+- [FAQ](../faq/): Some of the most frequently asked questions are answered there.
+- [Documentation](../documentation/): It is the general documentation of SpaceVim.
+- [Chatting room](https://app.element.io/#/room/#spacevim:matrix.org): General discussion about spacevim.
 
+## Feedback
+
+If you run into a bug, or want a new feature, please file an issue in the [issue tracker](https://github.com/SpaceVim/SpaceVim/issues)
